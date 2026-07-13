@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Capture {
+  id BigInt @id @default(autoincrement())
+
+  createdAt DateTime @default(now())
+
+  clientIp   String?
+  clientPort Int?
+
+  scheme String
+  host   String
+  port   Int?
+
+  method String
+
+  url  String @db.Text
+  path String @db.Text
+
+  query Json?
+
+  httpVersion String?
+
+  requestBody  String? @db.Text
+  responseBody String? @db.Text
+
+  statusCode Int?
+
+  requestSize  Int?
+  responseSize Int?
+
+  durationMs Int?
+
+  contentType String?
+
+  tls        Boolean @default(false)
+  tlsVersion String?
+  cipher     String?
+
+  headers Header[]
+  cookies Cookie[]
+
+  @@index([createdAt])
+  @@index([host])
+  @@index([method])
+  @@index([statusCode])
+  @@index([clientIp])
+}
+
+model Header {
+  id BigInt @id @default(autoincrement())
+
+  captureId BigInt
+
+  type HeaderType
+
+  name String
+
+  value String @db.Text
+
+  capture Capture @relation(fields: [captureId], references: [id])
+
+  @@index([captureId])
+}
+
+model Cookie {
+  id BigInt @id @default(autoincrement())
+
+  captureId BigInt
+
+  name String
+
+  value String @db.Text
+
+  domain String?
+
+  path String?
+
+  expires DateTime?
+
+  maxAge Int?
+
+  httpOnly Boolean @default(false)
+
+  secure Boolean @default(false)
+
+  sameSite SameSite?
+
+  source CookieSource
+
+  capture Capture @relation(fields: [captureId], references: [id])
+
+  @@index([captureId])
+}
+
+enum HeaderType {
+  REQUEST
+  RESPONSE
+}
+
+enum CookieSource {
+  REQUEST
+  RESPONSE
+}
+
+enum SameSite {
+  STRICT
+  LAX
+  NONE
+}
