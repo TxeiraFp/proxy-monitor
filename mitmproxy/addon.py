@@ -4,7 +4,7 @@ import time
 import json
 
 
-MAX_BODY = 2000
+MAX_BODY = 10000
 
 BACKEND_URL = "http://localhost:3007/capture"
 
@@ -14,10 +14,7 @@ def limpar_body(content):
         return ""
 
     try:
-        texto = content.decode("utf-8", errors="ignore")
-
-        if len(texto) > MAX_BODY:
-            texto = texto[:MAX_BODY] + "\n...[cortado]"
+        texto = content.decode("utf-8", errors="replace")
 
         try:
             return json.dumps(
@@ -28,7 +25,7 @@ def limpar_body(content):
         except:
             return texto
 
-    except:
+    except Exception:
         return "<dados binários>"
 
 
@@ -79,6 +76,7 @@ class Capture:
         dados = {
             "method": flow.request.method,
             "url": flow.request.pretty_url,
+	    "scheme": flow.request.scheme,
             "status": flow.response.status_code,
             "tempo": tempo,
             "requestBody": request_body,
