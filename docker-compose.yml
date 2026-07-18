@@ -1,0 +1,22 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: proxy-monitor-postgres
+
+    restart: always
+
+    environment:
+      POSTGRES_USER: proxy_monitor
+      POSTGRES_PASSWORD: senha123
+      POSTGRES_DB: proxy_monitor_db
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+  postgres_data:

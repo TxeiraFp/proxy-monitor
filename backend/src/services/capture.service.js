@@ -56,7 +56,6 @@ async function listCaptures() {
             createdAt: "desc"
         },
 
-        take: 100
     });
 
 }

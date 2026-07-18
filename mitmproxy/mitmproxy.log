@@ -1,0 +1,47 @@
+[22:44:25.539] Loading script addon.py
+[22:44:25.646] HTTP(S) proxy listening at *:8080.
+[22:45:21.277][10.0.0.2:54656] client connect
+[22:45:21.383][10.0.0.2:54657] client connect
+[22:45:21.389][10.0.0.2:54659] client connect
+[22:45:21.494][10.0.0.2:54656] Client TLS handshake failed. The client disconnected during the handshake. If this happens consistently for gdmf.apple.com, this may indicate that the client does not trust the proxy's certificate.
+[22:45:21.494][10.0.0.2:54656] client disconnect
+[22:45:21.595][10.0.0.2:54657] Client TLS handshake failed. The client does not trust the proxy's certificate for one.one.one.one (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[22:45:21.596][10.0.0.2:54657] client disconnect
+[22:45:21.620][10.0.0.2:54659] Client TLS handshake failed. The client does not trust the proxy's certificate for one.one.one.one (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[22:45:21.621][10.0.0.2:54659] client disconnect
+[22:45:26.306][10.0.0.2:55682] client connect
+[22:45:26.547][10.0.0.2:55682] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:45:26.548][10.0.0.2:55682] client disconnect
+[22:45:27.849][10.0.0.2:55699] client connect
+[22:45:28.026][10.0.0.2:55699] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:45:28.027][10.0.0.2:55699] client disconnect
+[22:45:29.241][10.0.0.2:55706] client connect
+[22:45:29.413][10.0.0.2:55706] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:45:29.414][10.0.0.2:55706] client disconnect
+[22:45:30.557][10.0.0.2:54663] client connect
+[22:45:30.607][10.0.0.2:55708] client connect
+[22:45:30.860][10.0.0.2:54663] Client TLS handshake failed. The client disconnected during the handshake. If this happens consistently for pancake.apple.com, this may indicate that the client does not trust the proxy's certificate.
+[22:45:30.860][10.0.0.2:54663] client disconnect
+[22:45:31.004][10.0.0.2:55708] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:45:31.004][10.0.0.2:55708] client disconnect
+[22:45:32.132][10.0.0.2:55709] client connect
+[22:45:32.247][10.0.0.2:55709] Client TLS handshake failed. The client disconnected during the handshake. If this happens consistently for 096563E8-6FBE-4D3B-9BB5-31F5C6634252-netseer-ipaddr-assoc.xz.fbcdn.net, this may indicate that the client does not trust the proxy's certificate.
+[22:45:32.247][10.0.0.2:55709] client disconnect
+[22:45:32.727][10.0.0.2:55710] client connect
+[22:45:32.883][10.0.0.2:55710] Client TLS handshake failed. The client disconnected during the handshake. If this happens consistently for 68123ab7-a779-436c-9710-58a888d8207d-netseer-ipaddr-assoc.xz.fbcdn.net, this may indicate that the client does not trust the proxy's certificate.
+[22:45:32.883][10.0.0.2:55710] client disconnect
+[22:45:33.206][10.0.0.2:55711] client connect
+[22:45:33.370][10.0.0.2:55711] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:45:33.371][10.0.0.2:55711] client disconnect
+[22:45:37.688][10.0.0.2:55712] client connect
+[22:45:37.974][10.0.0.2:55712] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:45:37.975][10.0.0.2:55712] client disconnect
+[22:45:45.271][10.0.0.2:55713] client connect
+[22:45:46.244][10.0.0.2:55713] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:45:46.245][10.0.0.2:55713] client disconnect
+[22:45:58.797][10.0.0.2:55716] client connect
+[22:45:59.016][10.0.0.2:55716] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt-fallback.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:45:59.017][10.0.0.2:55716] client disconnect
+[22:46:25.752][10.0.0.2:55717] client connect
+[22:46:25.938][10.0.0.2:55717] Client TLS handshake failed. The client does not trust the proxy's certificate for edge-mqtt.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert bad certificate')]))
+[22:46:25.938][10.0.0.2:55717] client disconnect

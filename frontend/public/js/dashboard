@@ -1,0 +1,255 @@
+const API = "/capture";
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    carregarCapturas();
+
+});
+
+
+
+// GET /capture
+
+async function carregarCapturas(){
+
+    try {
+
+        const response = await fetch(API);
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Erro HTTP: " + response.status
+            );
+
+        }
+
+
+        const dados = await response.json();
+
+
+        preencherTabela(dados);
+
+        atualizarCards(dados);
+
+
+
+    } catch(error){
+
+        console.error(
+            "Erro ao carregar capturas:",
+            error
+        );
+
+    }
+
+}
+
+
+
+
+
+// Preencher tabela
+
+function preencherTabela(lista){
+
+
+    const tbody =
+        document.getElementById("tbody");
+
+
+    tbody.innerHTML = "";
+
+
+
+    lista.forEach(item => {
+
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>
+                ${item.method ?? "-"}
+            </td>
+
+
+            <td>
+                ${item.host ?? item.url ?? "-"}
+            </td>
+
+
+            <td>
+
+                <span class="badge ${
+                    
+                    item.statusCode >= 400
+                    ? "bg-danger"
+                    : "bg-success"
+
+                }">
+
+                    ${item.statusCode ?? "-"}
+
+                </span>
+
+            </td>
+
+
+            <td>
+                ${formatarTempo(item.durationMs)}
+            </td>
+
+
+            <td>
+                ${formatarData(item.createdAt)}
+            </td>
+
+
+        </tr>
+
+        `;
+
+
+    });
+
+
+}
+
+
+
+
+
+
+// Atualizar cards
+
+function atualizarCards(lista){
+
+
+    const total =
+        lista.length;
+
+
+
+    const hoje =
+
+        lista.filter(item=>{
+
+
+            if(!item.createdAt)
+                return false;
+
+
+
+            const data =
+                new Date(
+                    item.createdAt
+                )
+                .toDateString();
+
+
+
+            return data ===
+            new Date()
+            .toDateString();
+
+
+
+        }).length;
+
+
+
+
+    const erros =
+
+        lista.filter(item =>
+
+            item.statusCode >= 400
+
+        ).length;
+
+
+
+
+
+    document
+    .getElementById("users")
+    .innerText =
+        total;
+
+
+
+    document
+    .getElementById("events")
+    .innerText =
+        hoje;
+
+
+
+    const erroElement =
+        document.querySelector(
+            ".text-danger"
+        );
+
+
+    if(erroElement){
+
+        erroElement.innerText =
+            erros;
+
+    }
+
+
+
+}
+
+
+
+
+
+
+function formatarData(data){
+
+
+    if(!data)
+
+        return "-";
+
+
+
+    return new Date(data)
+        .toLocaleString(
+            "pt-BR"
+        );
+
+}
+
+
+
+
+
+function formatarTempo(ms){
+
+
+    if(ms === null || ms === undefined)
+
+        return "-";
+
+
+
+    if(ms < 1000)
+
+        return ms + " ms";
+
+
+
+    return (
+
+        ms / 1000
+
+    ).toFixed(2) + " s";
+
+
+}

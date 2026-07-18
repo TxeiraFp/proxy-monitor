@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Proxy Monitor</title>
+
+<style>
+
+body{
+
+    font-family: Arial, sans-serif;
+    background:#111827;
+    color:white;
+    padding:20px;
+
+}
+
+
+h1{
+
+    color:#38bdf8;
+
+}
+
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+    background:#1f2937;
+
+}
+
+
+th{
+
+    background:#0284c7;
+    padding:12px;
+
+}
+
+
+td{
+
+    padding:10px;
+    border-bottom:1px solid #374151;
+
+}
+
+
+
+tr:hover{
+
+    background:#374151;
+
+}
+
+
+button{
+
+    background:#22c55e;
+    color:white;
+    border:0;
+    padding:8px 15px;
+    cursor:pointer;
+
+}
+
+
+
+pre{
+
+background:#000;
+padding:15px;
+overflow:auto;
+
+}
+
+
+#detalhes{
+
+display:none;
+margin-top:30px;
+
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+Proxy Monitor Dashboard
+</h1>
+
+<button onclick="carregar()">
+Atualizar
+</button>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Método</th>
+<th>Host</th>
+<th>Status</th>
+<th>IP</th>
+<th>Tempo</th>
+<th>Ação</th>
+
+</tr>
+
+</thead>
+
+<tbody id="lista">
+
+</tbody>
+
+</table>
+
+<div id="detalhes">
+
+<h2>
+Detalhes da captura
+</h2>
+
+<pre id="json">
+
+</pre>
+
+</div>
+
+<script>
+
+
+const API =
+"http://172.31.7.226:3007/api/v1/capture";
+
+
+
+let capturas=[];
+
+
+
+async function carregar(){
+
+
+try{
+
+
+const resposta =
+await fetch(API);
+
+
+
+capturas =
+await resposta.json();
+
+
+
+let html="";
+
+
+
+capturas.forEach((item,index)=>{
+
+
+html += `
+
+<tr>
+
+<td>
+${item.method}
+</td>
+
+
+<td>
+${item.host}
+</td>
+
+
+<td>
+${item.statusCode}
+</td>
+
+
+<td>
+${item.clientIp}
+</td>
+
+
+<td>
+${item.durationMs} ms
+</td>
+
+
+<td>
+
+<button onclick="ver(${index})">
+Abrir
+</button>
+
+</td>
+
+
+</tr>
+
+`;
+
+
+});
+
+
+
+document.getElementById("lista").innerHTML=html;
+
+
+
+}catch(e){
+
+
+alert(
+"Erro buscando API: "+e
+);
+
+
+}
+
+
+}
+
+
+
+
+function ver(index){
+
+
+const item =
+capturas[index];
+
+
+
+document.getElementById(
+"detalhes"
+).style.display="block";
+
+
+
+document.getElementById(
+"json"
+).textContent =
+JSON.stringify(
+item,
+null,
+2
+);
+
+
+
+}
+
+
+
+
+carregar();
+
+
+// atualiza sozinho a cada 5 segundos
+
+setInterval(
+carregar,
+5000
+);
+
+
+</script>
+
+</body>
+
+</html>
