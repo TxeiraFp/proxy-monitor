@@ -1,7 +1,8 @@
 const captureService = require("../services/capture.service");
 
 
-function serializeBigInt(obj) {
+function converterBigInt(obj) {
+
     return JSON.parse(
         JSON.stringify(
             obj,
@@ -11,7 +12,9 @@ function serializeBigInt(obj) {
                     : value
         )
     );
+
 }
+
 
 
 async function create(req, res) {
@@ -24,7 +27,7 @@ async function create(req, res) {
 
         res.status(201).json({
             success: true,
-            data: serializeBigInt(capture)
+            data: converterBigInt(capture)
         });
 
 
@@ -32,17 +35,17 @@ async function create(req, res) {
 
         console.error(error);
 
-        return res.status(500).json({
-            error:"Erro ao salvar captura",
-            detail:error.message
+        res.status(500).json({
+            error: "Erro ao salvar captura"
         });
+
     }
 
 }
 
 
 
-async function index(req,res){
+async function list(req, res) {
 
     try {
 
@@ -51,17 +54,93 @@ async function index(req,res){
 
 
         res.json(
-            serializeBigInt(captures)
+            converterBigInt(captures)
         );
 
 
-    } catch(error){
+    } catch(error) {
 
         console.error(error);
 
         res.status(500).json({
-            error:"Erro ao buscar capturas",
-            detail:error.message
+            error: "Erro ao buscar capturas"
+        });
+
+    }
+
+}
+
+async function remove(req,res){
+
+    try{
+
+
+        const deleted =
+            await captureService.removeCapture(
+                req.params.id
+            );
+
+
+
+        if(!deleted){
+
+            return res.status(404).json({
+
+                error:"Captura não encontrada"
+
+            });
+
+        }
+
+
+
+        return res.json({
+
+            success:true
+
+        });
+
+
+
+    }catch(error){
+
+
+        console.error(error);
+
+
+        return res.status(500).json({
+
+            error:"Erro ao remover captura",
+
+            message:error.message
+
+        });
+
+
+    }
+
+} 
+
+
+async function removeAll(req, res) {
+
+    try {
+
+        await captureService.deleteAllCaptures();
+
+
+        res.json({
+            success: true,
+            message: "Todas capturas removidas"
+        });
+
+
+    } catch(error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            error: "Erro ao remover capturas"
         });
 
     }
@@ -72,5 +151,7 @@ async function index(req,res){
 
 module.exports = {
     create,
-    index
+    list,
+    remove,
+    removeAll
 };

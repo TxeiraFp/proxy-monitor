@@ -1,67 +1,130 @@
+
 const prisma = require("../database/prisma");
 
 
-async function createCapture(data) {
+async function createCapture(data){
 
-    const capture = await prisma.capture.create({
-        data: {
-            clientIp: data.clientIp,
+    return prisma.capture.create({
 
-            scheme: data.scheme,
-            host: data.host,
-            port: data.port,
+        data
 
-            method: data.method,
-
-            url: data.url,
-            path: data.path,
-
-            query: data.query,
-
-            httpVersion: data.httpVersion,
-
-            requestBody: data.requestBody,
-            responseBody: data.responseBody,
-
-            statusCode: data.statusCode,
-
-            requestSize: data.requestSize,
-            responseSize: data.responseSize,
-
-            durationMs: data.durationMs,
-
-            contentType: data.contentType,
-
-            tls: data.tls,
-
-            headers: {
-                create: data.headers || []
-            },
-
-            cookies: {
-                create: data.cookies || []
-            }
-        }
     });
 
-
-    return capture;
 }
 
 
-async function listCaptures() {
+
+async function listCaptures(){
 
     return prisma.capture.findMany({
-        orderBy: {
-            createdAt: "desc"
+
+        orderBy:{
+            createdAt:"desc"
         },
+
+        include:{
+            headers:true,
+            cookies:true
+        }
 
     });
 
 }
+
+async function removeCapture(id){
+
+
+    const captureId = Number(id);
+
+
+
+    const capture = await prisma.capture.findUnique({
+
+        where:{
+            id:captureId
+        }
+
+    });
+
+
+
+    if(!capture){
+
+        return null;
+
+    }
+
+
+
+    await prisma.header.deleteMany({
+
+        where:{
+            captureId:captureId
+        }
+
+    });
+
+
+
+    await prisma.cookie.deleteMany({
+
+        where:{
+            captureId:captureId
+        }
+
+    });
+
+
+
+    return await prisma.capture.delete({
+
+        where:{
+            id:captureId
+        }
+
+    });
+
+
+}  
+
+
+async function removeAllCaptures(){
+
+    return prisma.capture.deleteMany();
+
+}
+
+
+
+async function getCapture(id){
+
+    return prisma.capture.findUnique({
+
+        where:{
+            id:Number(id)
+        },
+
+        include:{
+            headers:true,
+            cookies:true
+        }
+
+    });
+
+}
+
 
 
 module.exports = {
+
     createCapture,
-    listCaptures
+
+    listCaptures,
+
+    removeCapture,
+
+    removeAllCaptures,
+
+    getCapture
+
 };
