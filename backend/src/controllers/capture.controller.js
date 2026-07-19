@@ -1,15 +1,18 @@
 const captureService = require("../services/capture.service");
 
 
-function converterBigInt(obj) {
+
+function converterBigInt(obj){
 
     return JSON.parse(
         JSON.stringify(
             obj,
-            (_, value) =>
+            (_,value)=>
+
                 typeof value === "bigint"
-                    ? Number(value)
-                    : value
+                ? Number(value)
+                : value
+
         )
     );
 
@@ -17,26 +20,34 @@ function converterBigInt(obj) {
 
 
 
-async function create(req, res) {
 
-    try {
+
+async function create(req,res){
+
+    try{
+
 
         const capture =
             await captureService.createCapture(req.body);
 
 
-        res.status(201).json({
-            success: true,
-            data: converterBigInt(capture)
-        });
+
+        res.status(201).json(
+            converterBigInt(capture)
+        );
 
 
-    } catch(error) {
+    }catch(error){
 
         console.error(error);
 
+
         res.status(500).json({
-            error: "Erro ao salvar captura"
+
+            error:"Erro ao salvar captura",
+
+            message:error.message
+
         });
 
     }
@@ -45,12 +56,16 @@ async function create(req, res) {
 
 
 
-async function list(req, res) {
 
-    try {
+
+async function list(req,res){
+
+    try{
+
 
         const captures =
             await captureService.listCaptures();
+
 
 
         res.json(
@@ -58,43 +73,42 @@ async function list(req, res) {
         );
 
 
-    } catch(error) {
+    }catch(error){
+
 
         console.error(error);
 
+
         res.status(500).json({
-            error: "Erro ao buscar capturas"
+
+            error:"Erro ao buscar capturas",
+
+            message:error.message
+
         });
+
 
     }
 
 }
+
+
+
+
 
 async function remove(req,res){
 
     try{
 
 
-        const deleted =
-            await captureService.removeCapture(
-                req.params.id
-            );
+        const {id}=req.params;
+
+
+        await captureService.removeCapture(id);
 
 
 
-        if(!deleted){
-
-            return res.status(404).json({
-
-                error:"Captura não encontrada"
-
-            });
-
-        }
-
-
-
-        return res.json({
+        res.json({
 
             success:true
 
@@ -108,7 +122,8 @@ async function remove(req,res){
         console.error(error);
 
 
-        return res.status(500).json({
+
+        res.status(500).json({
 
             error:"Erro ao remover captura",
 
@@ -119,29 +134,43 @@ async function remove(req,res){
 
     }
 
-} 
+}
 
 
-async function removeAll(req, res) {
 
-    try {
 
-        await captureService.deleteAllCaptures();
+
+async function removeAll(req,res){
+
+    try{
+
+
+        await captureService.removeAllCaptures();
+
 
 
         res.json({
-            success: true,
-            message: "Todas capturas removidas"
+
+            success:true
+
         });
 
 
-    } catch(error) {
+
+    }catch(error){
+
 
         console.error(error);
 
+
         res.status(500).json({
-            error: "Erro ao remover capturas"
+
+            error:"Erro ao limpar capturas",
+
+            message:error.message
+
         });
+
 
     }
 
@@ -149,9 +178,15 @@ async function removeAll(req, res) {
 
 
 
-module.exports = {
+
+module.exports={
+
     create,
+
     list,
+
     remove,
+
     removeAll
+
 };

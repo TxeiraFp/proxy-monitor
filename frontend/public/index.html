@@ -250,14 +250,15 @@ Detalhes
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
 <script>
 
-const API = "/api/v1";
+const API="/api/v1";
 
 
 async function loadCaptures(){
 
-    try {
+    try{
 
         const response = await fetch(`${API}/capture`);
 
@@ -269,86 +270,89 @@ async function loadCaptures(){
         const captures = await response.json();
 
 
-        document.getElementById("total").innerText = captures.length;
+        document.getElementById("total").innerText =
+            captures.length;
 
 
         document.getElementById("https").innerText =
-            captures.filter(x => x.tls).length;
+            captures.filter(x => x.tls === true).length;
 
 
         document.getElementById("errors").innerText =
-            captures.filter(x => x.statusCode >= 400).length;
+            captures.filter(x => Number(x.statusCode) >= 400).length;
 
 
 
-        const table = document.getElementById("captureTable");
-
-        table.innerHTML = "";
-
+        const table =
+            document.getElementById("captureTable");
 
 
-        captures.forEach(capture => {
+        table.innerHTML="";
 
 
-            const statusClass =
-                capture.statusCode >= 400
+
+        captures.forEach(capture=>{
+
+
+            let statusClass =
+                Number(capture.statusCode) >= 400
                 ? "danger"
                 : "success";
 
 
-            const methodClass =
+            let methodClass =
                 capture.method === "GET"
                 ? "primary"
                 : "warning";
 
 
 
-            const row = document.createElement("tr");
+            table.innerHTML += `
 
+            <tr>
 
-            row.innerHTML = `
-
-                <td>${capture.id ?? ""}</td>
+                <td>
+                    ${capture.id}
+                </td>
 
 
                 <td>
                     <span class="badge bg-${methodClass}">
-                        ${capture.method ?? ""}
+                        ${capture.method || ""}
                     </span>
                 </td>
 
 
                 <td>
                     <span class="badge bg-${statusClass}">
-                        ${capture.statusCode ?? ""}
+                        ${capture.statusCode || ""}
                     </span>
                 </td>
 
 
                 <td class="url-column">
-                    ${escapeHtml(capture.url ?? "")}
+                    ${escapeHtml(capture.url || "")}
                 </td>
 
 
                 <td>
-                    ${capture.clientIp ?? ""}
+                    ${capture.clientIp || ""}
                 </td>
 
 
                 <td>
-                    ${capture.durationMs ?? 0} ms
+                    ${capture.durationMs || 0} ms
                 </td>
 
 
                 <td>
 
 
-                    <button 
-                    class="btn btn-sm btn-info me-1"
+                    <button
+                    class="btn btn-sm btn-info"
                     onclick="showDetails(${capture.id})">
                         Detalhes
                     </button>
-
 
 
                     <button
@@ -360,17 +364,21 @@ async function loadCaptures(){
 
                 </td>
 
+
+            </tr>
+
             `;
-
-
-            table.appendChild(row);
 
 
         });
 
 
 
-    } catch(error){
+        window.captures = captures;
+
+
+
+    }catch(error){
 
         console.error(error);
 
@@ -379,7 +387,6 @@ async function loadCaptures(){
     }
 
 }
-
 
 
 
@@ -397,7 +404,7 @@ async function deleteCapture(id){
 
 
         const response = await fetch(
-            `${API}/capture/${encodeURIComponent(id)}`,
+            `${API}/capture/${id}`,
             {
                 method:"DELETE"
             }
@@ -411,15 +418,17 @@ async function deleteCapture(id){
 
         if(!response.ok){
 
+            console.error(result);
+
             throw new Error(
-                result.error || "Falha ao remover"
+                result.message || "Erro ao remover"
             );
 
         }
 
 
 
-        alert("Captura removida com sucesso");
+        alert("Captura removida");
 
 
         loadCaptures();
@@ -431,9 +440,8 @@ async function deleteCapture(id){
 
         console.error(error);
 
-
         alert(
-            "Erro ao remover captura: " + error.message
+            "Erro ao remover captura"
         );
 
 
@@ -445,99 +453,61 @@ async function deleteCapture(id){
 
 
 
+function showDetails(id){
 
 
-
-async function showDetails(id){
-
-
-    try{
-
-
-        const response = await fetch(
-            `${API}/capture/${id}`
+    const capture =
+        window.captures.find(
+            x => x.id == id
         );
 
 
-        if(!response.ok){
-
-            throw new Error(
-                "Erro buscando detalhes"
-            );
-
-        }
-
-
-        const data = await response.json();
-
-
-
-        document.getElementById("details").textContent =
-            JSON.stringify(
-                data,
-                null,
-                2
-            );
-
-
-
-        const modal =
-            new bootstrap.Modal(
-                document.getElementById("detailModal")
-            );
-
-
-        modal.show();
-
-
-
-    }catch(error){
-
-
-        console.error(error);
-
-
-        alert(
-            "Erro ao abrir detalhes"
-        );
-
-
+    if(!capture){
+        return;
     }
 
 
+
+    document.getElementById("details").textContent =
+
+        JSON.stringify(
+            capture,
+            null,
+            2
+        );
+
+
+
+    const modal =
+        new bootstrap.Modal(
+            document.getElementById("detailModal")
+        );
+
+
+    modal.show();
+
+
 }
-
-
-
 
 
 
 
 function escapeHtml(text){
 
-
     return String(text)
 
     .replace(/&/g,"&amp;")
-
     .replace(/</g,"&lt;")
-
     .replace(/>/g,"&gt;")
-
     .replace(/"/g,"&quot;")
-
     .replace(/'/g,"&#039;");
-
 
 }
 
 
 
 
-
-
 loadCaptures();
-
 
 
 setInterval(
@@ -546,9 +516,7 @@ setInterval(
 );
 
 
-
 </script>
-
 
 
 </body>

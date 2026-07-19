@@ -2,7 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
-const captureController = require("../controllers/capture.controller");
+const captureController =
+require("../controllers/capture.controller");
 
 
 router.get(
