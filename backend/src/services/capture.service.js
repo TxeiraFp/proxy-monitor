@@ -61,8 +61,7 @@ async function createCapture(data){
             cipher:data.cipher,
 
 
-
-	               headers:{
+	    headers:{
                 create:
 
                 Array.isArray(data.headers)
@@ -75,7 +74,7 @@ async function createCapture(data){
 
                     value:String(h.value || ""),
 
-                    type:String(h.type || "request")
+                    type:String(h.type || "REQUEST").toUpperCase()
 
                 }))
 
@@ -96,7 +95,8 @@ async function createCapture(data){
 
                     name:String(c.name || ""),
 
-                    value:String(c.value || "")
+                    value:String(c.value || ""),
+		    source:String(c.source || "REQUEST").toUpperCase()
 
                 }))
 
