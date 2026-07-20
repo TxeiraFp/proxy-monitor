@@ -17,39 +17,102 @@ body{
     background:#f4f6f9;
 }
 
+
 .card-dashboard{
     border-left:5px solid #0d6efd;
 }
 
+
 .url-column{
+
     max-width:350px;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
+
 }
 
+
 pre{
+
     background:#111;
     color:#00ff90;
     padding:15px;
     border-radius:8px;
     max-height:500px;
     overflow:auto;
+
 }
 
+
+
 .table td{
+
     vertical-align:middle;
+
 }
+
+
+
+.action-buttons{
+
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+
+}
+
+
 
 @media(max-width:768px){
 
-.table{
-    font-size:12px;
+
+.container-fluid{
+
+    padding:15px !important;
+
 }
 
-.url-column{
-    max-width:120px;
+
+
+h1{
+
+    font-size:22px;
+
 }
+
+
+
+.table{
+
+    font-size:12px;
+
+}
+
+
+
+.url-column{
+
+    max-width:150px;
+
+}
+
+
+
+.btn{
+
+    font-size:12px;
+
+}
+
+
+
+.action-buttons button{
+
+    width:100%;
+
+}
+
 
 }
 
@@ -60,25 +123,52 @@ pre{
 </head>
 
 
+
 <body>
 
 
-<div class="container-fluid p-3 p-md-5">
+<div class="container-fluid p-4">
 
 
-<div class="d-flex justify-content-between align-items-center mb-4">
 
-<h1 class="h3">
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+
+
+<h1 class="h3 mb-0">
 🚀 Proxy Monitor
 </h1>
 
 
-<button class="btn btn-primary" id="btnRefresh">
+
+<div class="d-flex gap-2">
+
+
+<button 
+class="btn btn-primary"
+onclick="loadCaptures()">
+
 Atualizar
+
 </button>
 
 
+
+<button 
+class="btn btn-danger"
+onclick="deleteAllCaptures()">
+
+🗑 Apagar Todas
+
+</button>
+
+
+
 </div>
+
+
+</div>
+
+
 
 
 
@@ -88,23 +178,29 @@ Atualizar
 
 <div class="col-md-4 mb-3">
 
+
 <div class="card shadow-sm card-dashboard">
 
 <div class="card-body">
 
 <h6>Total Capturas</h6>
 
-<h2 id="total">0</h2>
+<h2 id="total">
+0
+</h2>
 
 </div>
 
 </div>
 
+
 </div>
+
 
 
 
 <div class="col-md-4 mb-3">
+
 
 <div class="card shadow-sm">
 
@@ -112,17 +208,23 @@ Atualizar
 
 <h6>HTTPS</h6>
 
-<h2 id="https">0</h2>
+<h2 id="https">
+0
+</h2>
 
 </div>
 
 </div>
 
+
 </div>
+
+
 
 
 
 <div class="col-md-4 mb-3">
+
 
 <div class="card shadow-sm">
 
@@ -130,16 +232,22 @@ Atualizar
 
 <h6>Erros</h6>
 
-<h2 id="errors">0</h2>
+<h2 id="errors">
+0
+</h2>
 
 </div>
 
 </div>
 
+
 </div>
 
 
+
 </div>
+
+
 
 
 
@@ -155,6 +263,7 @@ Capturas HTTP
 </div>
 
 
+
 <div class="card-body">
 
 
@@ -163,7 +272,9 @@ Capturas HTTP
 
 <table class="table table-hover">
 
+
 <thead>
+
 
 <tr>
 
@@ -175,9 +286,12 @@ Capturas HTTP
 <th>Tempo</th>
 <th>Ações</th>
 
+
 </tr>
 
+
 </thead>
+
 
 
 <tbody id="captureTable">
@@ -185,20 +299,25 @@ Capturas HTTP
 </tbody>
 
 
+
 </table>
 
 
-</div>
-
 
 </div>
 
 
-</div>
-
 
 </div>
 
+
+
+</div>
+
+
+
+
+</div>
 
 
 
@@ -217,23 +336,30 @@ Capturas HTTP
 
 <div class="modal-header">
 
+
 <h5 class="modal-title">
+
 Detalhes
+
 </h5>
 
 
-<button class="btn-close" data-bs-dismiss="modal"></button>
+<button 
+class="btn-close"
+data-bs-dismiss="modal">
+
+</button>
 
 
 </div>
+
 
 
 <div class="modal-body">
 
+
 <pre id="details"></pre>
 
-</div>
-
 
 </div>
 
@@ -242,6 +368,11 @@ Detalhes
 
 
 </div>
+
+
+</div>
+
+
 
 
 
@@ -251,142 +382,228 @@ Detalhes
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
+
 <script>
+
 
 const API="/api/v1";
 
 
+
+
+
 async function loadCaptures(){
 
-    try{
 
-        const response = await fetch(`${API}/capture`);
-
-        if(!response.ok){
-            throw new Error("Erro API");
-        }
+try{
 
 
-        const captures = await response.json();
-
-
-        document.getElementById("total").innerText =
-            captures.length;
-
-
-        document.getElementById("https").innerText =
-            captures.filter(x => x.tls === true).length;
-
-
-        document.getElementById("errors").innerText =
-            captures.filter(x => Number(x.statusCode) >= 400).length;
+const response =
+await fetch(`${API}/capture`);
 
 
 
-        const table =
-            document.getElementById("captureTable");
+if(!response.ok){
 
-
-        table.innerHTML="";
-
-
-
-        captures.forEach(capture=>{
-
-
-            let statusClass =
-                Number(capture.statusCode) >= 400
-                ? "danger"
-                : "success";
-
-
-            let methodClass =
-                capture.method === "GET"
-                ? "primary"
-                : "warning";
-
-
-
-            table.innerHTML += `
-
-            <tr>
-
-                <td>
-                    ${capture.id}
-                </td>
-
-
-                <td>
-                    <span class="badge bg-${methodClass}">
-                        ${capture.method || ""}
-                    </span>
-                </td>
-
-
-                <td>
-                    <span class="badge bg-${statusClass}">
-                        ${capture.statusCode || ""}
-                    </span>
-                </td>
-
-
-                <td class="url-column">
-                    ${escapeHtml(capture.url || "")}
-                </td>
-
-
-                <td>
-                    ${capture.clientIp || ""}
-                </td>
-
-
-                <td>
-                    ${capture.durationMs || 0} ms
-                </td>
-
-
-                <td>
-
-
-                    <button
-                    class="btn btn-sm btn-info"
-                    onclick="showDetails(${capture.id})">
-                        Detalhes
-                    </button>
-
-
-                    <button
-                    class="btn btn-sm btn-danger"
-                    onclick="deleteCapture(${capture.id})">
-                        Excluir
-                    </button>
-
-
-                </td>
-
-
-            </tr>
-
-            `;
-
-
-        });
-
-
-
-        window.captures = captures;
-
-
-
-    }catch(error){
-
-        console.error(error);
-
-        alert("Erro carregando capturas");
-
-    }
+throw new Error("Erro API");
 
 }
+
+
+
+const captures =
+await response.json();
+
+
+
+
+document.getElementById("total").innerText =
+captures.length;
+
+
+
+document.getElementById("https").innerText =
+captures.filter(
+x=>x.tls
+).length;
+
+
+
+document.getElementById("errors").innerText =
+captures.filter(
+x=>x.statusCode >=400
+).length;
+
+
+
+
+
+const table =
+document.getElementById("captureTable");
+
+
+
+table.innerHTML="";
+
+
+
+
+
+captures.forEach(capture=>{
+
+
+let status =
+capture.statusCode >=400
+?"danger"
+:"success";
+
+
+
+let method =
+capture.method==="POST"
+?"warning"
+:"primary";
+
+
+
+
+
+let row =
+document.createElement("tr");
+
+
+
+row.innerHTML=`
+
+
+<td>
+${capture.id ?? ""}
+</td>
+
+
+
+<td>
+
+<span class="badge bg-${method}">
+
+${capture.method ?? ""}
+
+</span>
+
+</td>
+
+
+
+
+<td>
+
+<span class="badge bg-${status}">
+
+${capture.statusCode ?? ""}
+
+</span>
+
+</td>
+
+
+
+
+
+<td class="url-column">
+
+${escapeHtml(
+capture.url ?? ""
+)}
+
+</td>
+
+
+
+
+
+<td>
+
+${capture.clientIp ?? ""}
+
+</td>
+
+
+
+
+
+<td>
+
+${capture.durationMs ?? 0} ms
+
+</td>
+
+
+
+
+
+<td>
+
+
+<div class="action-buttons">
+
+
+<button
+class="btn btn-sm btn-info"
+onclick="showDetails('${capture.id}')">
+
+Detalhes
+
+</button>
+
+
+
+
+<button
+class="btn btn-sm btn-danger"
+onclick="deleteCapture('${capture.id}')">
+
+Excluir
+
+</button>
+
+
+</div>
+
+
+</td>
+
+
+
+`;
+
+
+
+table.appendChild(row);
+
+
+
+});
+
+
+
+
+}catch(e){
+
+
+console.error(e);
+
+
+}
+
+
+
+
+}
+
+
+
+
+
 
 
 
@@ -394,58 +611,22 @@ async function loadCaptures(){
 async function deleteCapture(id){
 
 
-    if(!confirm("Deseja remover esta captura?")){
-        return;
-    }
+if(!confirm("Excluir captura?"))
+return;
 
 
 
-    try{
-
-
-        const response = await fetch(
-            `${API}/capture/${id}`,
-            {
-                method:"DELETE"
-            }
-        );
+await fetch(
+`${API}/capture/${id}`,
+{
+method:"DELETE"
+}
+);
 
 
 
-        const result = await response.json();
+loadCaptures();
 
-
-
-        if(!response.ok){
-
-            console.error(result);
-
-            throw new Error(
-                result.message || "Erro ao remover"
-            );
-
-        }
-
-
-
-        alert("Captura removida");
-
-
-        loadCaptures();
-
-
-
-    }catch(error){
-
-
-        console.error(error);
-
-        alert(
-            "Erro ao remover captura"
-        );
-
-
-    }
 
 
 }
@@ -453,56 +634,154 @@ async function deleteCapture(id){
 
 
 
-function showDetails(id){
-
-
-    const capture =
-        window.captures.find(
-            x => x.id == id
-        );
-
-
-    if(!capture){
-        return;
-    }
 
 
 
-    document.getElementById("details").textContent =
 
-        JSON.stringify(
-            capture,
-            null,
-            2
-        );
+
+async function deleteAllCaptures(){
 
 
 
-    const modal =
-        new bootstrap.Modal(
-            document.getElementById("detailModal")
-        );
+if(!confirm(
+"Deseja apagar TODAS as capturas?"
+))
+return;
 
 
-    modal.show();
+
+
+try{
+
+
+const response =
+await fetch(
+`${API}/capture`,
+{
+method:"DELETE"
+}
+);
+
+
+
+if(!response.ok){
+
+throw new Error();
+
+}
+
+
+
+
+alert(
+"Todas as capturas apagadas"
+);
+
+
+
+loadCaptures();
+
+
+
+}catch(e){
+
+
+alert(
+"Erro apagando capturas"
+);
+
 
 
 }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+async function showDetails(id){
+
+
+try{
+
+
+const response =
+await fetch(
+`${API}/capture/${id}`
+);
+
+
+
+const data =
+await response.json();
+
+
+
+
+
+document.getElementById("details").textContent =
+JSON.stringify(
+data,
+null,
+2
+);
+
+
+
+
+
+new bootstrap.Modal(
+document.getElementById("detailModal")
+).show();
+
+
+
+}catch(e){
+
+
+console.error(e);
+
+
+}
+
+
+
+}
+
+
+
+
+
 
 
 
 
 function escapeHtml(text){
 
-    return String(text)
 
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+return String(text)
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
 
 }
+
+
 
 
 
@@ -510,10 +789,12 @@ function escapeHtml(text){
 loadCaptures();
 
 
+
 setInterval(
-    loadCaptures,
-    5000
+loadCaptures,
+5000
 );
+
 
 
 </script>
