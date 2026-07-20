@@ -4,7 +4,7 @@ services:
     image: postgres:16
     container_name: proxy-monitor-postgres
 
-    restart: always
+    restart: unless-stopped
 
     environment:
       POSTGRES_USER: proxy_monitor
@@ -18,5 +18,42 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
 
+
+  backend:
+    container_name: proxy-monitor-backend
+
+    build:
+      context: ./backend
+
+    restart: unless-stopped
+
+    ports:
+      - "3007:3007"
+
+    environment:
+      DATABASE_URL: postgresql://proxy_monitor:senha123@postgres:5432/proxy_monitor_db
+
+    depends_on:
+      - postgres
+
+
+
+  frontend:
+    container_name: proxy-monitor-frontend
+
+    build:
+      context: ./frontend
+
+    restart: unless-stopped
+
+    ports:
+      - "8080:80"
+
+    depends_on:
+      - backend
+
+
+
 volumes:
+
   postgres_data:
