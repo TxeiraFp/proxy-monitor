@@ -93,7 +93,46 @@ async function list(req,res){
 }
 
 
+async function get(req,res){
 
+    try{
+
+        const { id } = req.params;
+
+        const capture =
+            await captureService.getCapture(id);
+
+
+        if(!capture){
+
+            return res.status(404).json({
+                error:"Captura não encontrada"
+            });
+
+        }
+
+
+        res.json(
+            converterBigInt(capture)
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+
+        res.status(500).json({
+
+            error:"Erro ao buscar captura",
+
+            message:error.message
+
+        });
+
+    }
+
+}
 
 
 async function remove(req,res){
@@ -184,6 +223,8 @@ module.exports={
     create,
 
     list,
+
+    get,
 
     remove,
 

@@ -152,6 +152,31 @@ async function listCaptures(){
 }
 
 
+async function getCapture(id){
+
+    const captureId = BigInt(id);
+
+
+    return prisma.capture.findUnique({
+
+        where:{
+            id:captureId
+        },
+
+
+        include:{
+
+            headers:true,
+
+            cookies:true
+
+        }
+
+    });
+
+}
+
+
 async function removeCapture(id){
 
     const captureId = BigInt(id);
@@ -235,6 +260,8 @@ module.exports={
     createCapture,
 
     listCaptures,
+
+    getCapture,
 
     removeCapture,
 

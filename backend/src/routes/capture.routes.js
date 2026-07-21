@@ -18,6 +18,11 @@ router.post(
 );
 
 
+router.get(
+    "/capture/:id",
+    captureController.get
+);
+
 router.delete(
     "/capture/:id",
     captureController.remove
